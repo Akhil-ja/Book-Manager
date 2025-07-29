@@ -2,10 +2,11 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import morgan from "morgan";
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
+import cors from "cors";
+import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
+import Routes from "./routes/index.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,9 +20,7 @@ app.use(cors()); //cors
 app.use(express.json()); // Body parser
 app.use(cookieParser()); // Cookie parser
 
-app.get("/", (req, res) => {
-  res.send("Hello");
-});
+app.use("/api", Routes);
 
 // Error middleware
 app.use(errorHandler);
