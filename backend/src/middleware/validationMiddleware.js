@@ -1,5 +1,6 @@
 import { body, validationResult } from "express-validator";
 import AppError from "../utils/AppError.js";
+import STATUS_CODES from "../utils/statusCodes.js";
 
 // Validation middleware for user registration
 export const validateRegister = [
@@ -18,7 +19,9 @@ export const validateRegister = [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       const errorMessages = errors.array().map((error) => error.msg);
-      return next(new AppError(errorMessages.join(", "), 400));
+      return next(
+        new AppError(errorMessages.join(", "), STATUS_CODES.BAD_REQUEST)
+      );
     }
     next();
   },
@@ -36,7 +39,9 @@ export const validateLogin = [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       const errorMessages = errors.array().map((error) => error.msg);
-      return next(new AppError(errorMessages.join(", "), 400));
+      return next(
+        new AppError(errorMessages.join(", "), STATUS_CODES.BAD_REQUEST)
+      );
     }
     next();
   },
@@ -54,7 +59,9 @@ export const validateBook = [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       const errorMessages = errors.array().map((error) => error.msg);
-      return next(new AppError(errorMessages.join(", "), 400));
+      return next(
+        new AppError(errorMessages.join(", "), STATUS_CODES.BAD_REQUEST)
+      );
     }
     next();
   },

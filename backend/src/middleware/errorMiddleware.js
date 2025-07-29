@@ -1,4 +1,5 @@
 import AppError from "../utils/AppError.js";
+import STATUS_CODES from "../utils/statusCodes.js";
 
 const errorHandler = (err, req, res, next) => {
   let error = { ...err };
@@ -7,7 +8,7 @@ const errorHandler = (err, req, res, next) => {
   // Handle invalid MongoDB ObjectId
   if (err.name === "CastError") {
     const message = `Invalid ${err.path}. Please provide a valid ID.`;
-    error = new AppError(message, 400);
+    error = new AppError(message, STATUS_CODES.BAD_REQUEST);
   }
 
   // Handle duplicate key error (e.g:duplicate email)
@@ -17,7 +18,7 @@ const errorHandler = (err, req, res, next) => {
     const message = `${
       field.charAt(0).toUpperCase() + field.slice(1)
     } '${value}' already exists. Please use a different ${field}.`;
-    error = new AppError(message, 409);
+    error = new AppError(message, STATUS_CODES.CONFLICT);
   }
 
   // Handle mongoose validation errors (required fields, min/max length, etc.)
@@ -57,25 +58,25 @@ const errorHandler = (err, req, res, next) => {
     });
 
     const message = messages.length === 1 ? messages[0] : messages.join(". ");
-    error = new AppError(message, 400);
+    error = new AppError(message, STATUS_CODES.BAD_REQUEST);
   }
 
   // Handle invalid JWT token
   if (err.name === "JsonWebTokenError") {
     const message = "Invalid token. Please log in again.";
-    error = new AppError(message, 401);
+    error = new AppError(message, STATUS_CODES.UNAUTHORIZED);
   }
 
   // Handle expired JWT token
   if (err.name === "TokenExpiredError") {
     const message = "Your session has expired. Please log in again.";
-    error = new AppError(message, 401);
+    error = new AppError(message, STATUS_CODES.UNAUTHORIZED);
   }
 
   // Handle database connection errors
   if (err.name === "MongoError" || err.name === "MongooseError") {
     const message = "Database connection error. Please try again later.";
-    error = new AppError(message, 500);
+    error = new AppError(message, STATUS_CODES.INTERNAL_SERVER_ERROR);
   }
 
   // Check if error is operational (expected) or programming error
@@ -86,12 +87,12 @@ const errorHandler = (err, req, res, next) => {
 
   // Set default response message and status code
   let responseMessage = error.message || "Something went wrong";
-  let statusCode = error.statusCode || 500;
+  let statusCode = error.statusCode || STATUS_CODES.INTERNAL_SERVER_ERROR;
 
   // Hide programming error details in production
   if (!isOperational && !isDevelopment) {
     responseMessage = "Something went wrong. Please try again later.";
-    statusCode = 500;
+    statusCode = STATUS_CODES.INTERNAL_SERVER_ERROR;
 
     console.error("Programming Error:", err);
   }
