@@ -1,13 +1,16 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { useAuth } from "../hooks/useAuth";
+import { showNotification } from "../store/features/notificationSlice";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { user, status, error, handleRegister } = useAuth();
 
   useEffect(() => {
@@ -18,7 +21,36 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleRegister({ name, email, password });
+
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedPassword) {
+      dispatch(
+        showNotification({
+          message: "All fields are required.",
+          type: "error",
+        })
+      );
+      return;
+    }
+
+    if (/\d/.test(trimmedName)) {
+      dispatch(
+        showNotification({
+          message: "Name cannot contain numbers.",
+          type: "error",
+        })
+      );
+      return;
+    }
+
+    handleRegister({
+      name: trimmedName,
+      email: trimmedEmail,
+      password: trimmedPassword,
+    });
   };
 
   return (

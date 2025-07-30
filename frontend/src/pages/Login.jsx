@@ -1,12 +1,15 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { useAuth } from "../hooks/useAuth";
+import { showNotification } from "../store/features/notificationSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { user, status, error, handleLogin } = useAuth();
 
   useEffect(() => {
@@ -17,7 +20,21 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleLogin({ email, password });
+
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedEmail || !trimmedPassword) {
+      dispatch(
+        showNotification({
+          message: "Email and password are required.",
+          type: "error",
+        })
+      );
+      return;
+    }
+
+    handleLogin({ email: trimmedEmail, password: trimmedPassword });
   };
 
   return (
