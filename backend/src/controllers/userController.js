@@ -46,7 +46,7 @@ export const logoutUserController = (req, res) => {
   // Define common the options
   const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === "production" || true,
     sameSite: "none",
   };
 

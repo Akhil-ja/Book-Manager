@@ -22,7 +22,7 @@ export const sendTokenResponse = (user, statusCode, res) => {
   const accessCookieOptions = {
     expires: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === "production" || true,
     sameSite: "none",
   };
 
@@ -30,7 +30,7 @@ export const sendTokenResponse = (user, statusCode, res) => {
   const refreshCookieOptions = {
     expires: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === "production" || true,
     sameSite: "none",
   };
 
