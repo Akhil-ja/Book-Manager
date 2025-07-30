@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../services/axiosInstance";
+import { showNotification } from "./notificationSlice";
 
 // Fetch books with optional search and pagination
 export const getBooks = createAsyncThunk(
@@ -13,10 +14,29 @@ export const getBooks = createAsyncThunk(
 );
 
 // Add a new book
-export const addBook = createAsyncThunk("books/addBook", async (bookData) => {
-  const response = await axiosInstance.post("/books", bookData);
-  return response.data;
-});
+export const addBook = createAsyncThunk(
+  "books/addBook",
+  async (bookData, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post("/books", bookData);
+      dispatch(
+        showNotification({
+          message: "Book added successfully",
+          type: "success",
+        })
+      );
+      return response.data;
+    } catch (error) {
+      dispatch(
+        showNotification({
+          message: error.response?.data?.message || "Failed to add book.",
+          type: "error",
+        })
+      );
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
 
 // Books slice to manage book-related state
 const booksSlice = createSlice({

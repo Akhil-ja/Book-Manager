@@ -19,7 +19,7 @@ export const register = createAsyncThunk(
       dispatch(
         showNotification({
           message: error.response?.data?.message || "Registration failed",
-          type: "danger",
+          type: "error",
         })
       );
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -41,7 +41,7 @@ export const login = createAsyncThunk(
       dispatch(
         showNotification({
           message: error.response?.data?.message || "Login failed",
-          type: "danger",
+          type: "error",
         })
       );
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -65,7 +65,7 @@ export const logout = createAsyncThunk(
       dispatch(
         showNotification({
           message: error.response?.data?.message || "Logout failed",
-          type: "danger",
+          type: "error",
         })
       );
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -90,7 +90,7 @@ export const refreshAuthToken = createAsyncThunk(
           message:
             error.response?.data?.message ||
             "Session expired. Please log in again.",
-          type: "danger",
+          type: "error",
         })
       );
       return rejectWithValue(error.response?.data?.message || error.message);
