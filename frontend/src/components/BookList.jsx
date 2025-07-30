@@ -38,7 +38,10 @@ const BookList = () => {
             className="form-control"
             placeholder="Search by title or author..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
           />
           <button className="btn btn-outline-secondary" type="submit">
             Search
