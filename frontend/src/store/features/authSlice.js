@@ -85,14 +85,16 @@ export const refreshAuthToken = createAsyncThunk(
         "Token refresh failed:",
         error.response?.data?.message || error.message
       );
-      dispatch(
-        showNotification({
-          message:
-            error.response?.data?.message ||
-            "Session expired. Please log in again.",
-          type: "error",
-        })
-      );
+      if (error.response?.data?.message !== "No refresh token found") {
+        dispatch(
+          showNotification({
+            message:
+              error.response?.data?.message ||
+              "Session expired. Please log in again.",
+            type: "error",
+          })
+        );
+      }
       return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
